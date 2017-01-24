@@ -1,0 +1,72 @@
+import sqlite3
+import csv
+import pandas as pd
+conn = sqlite3.connect("practice.db") #4SEATS
+c = conn.cursor()
+
+#counting seats
+
+c.execute("SELECT COUNT(seat) FROM seating")
+for item in c:
+    nseats = item[0]
+    print("Number of seats on the plane:", nseats)
+
+c.execute("SELECT COUNT(name) FROM seating WHERE name NOT LIKE '' ;")
+for item in c:
+    nnames = item[0]
+    print("Number of unavailable seats:", nnames)
+
+navail = nseats - nnames
+print("Number of available seats:", navail)
+
+
+#rows and aisles
+
+#c.execute("SELECT seats FROM rows_cols;")
+#for item in c:
+#    seat_letters = item[0]
+#    seats_per_row = (len(seat_letters))
+#    print("Number of seats per row:", seats_per_row)
+#    print("Number of rows on the plane:", int(nseats/seats_per_row))
+
+print("Number of seats per row:", 4)
+print("Number of rows on the plane:", 1)
+
+df = pd.read_sql_query("SELECT * FROM seating;", conn)  # give the table name and the connection
+print(df.head())
+
+passengers_refused = 0
+
+with open("5passenger.csv") as csvfile:
+    bookings = csv.reader(csvfile, delimiter = ',')
+    for row in bookings:
+        name = row[0]
+        passengers = (int(row[1]))
+        print("Number of passengers for", name, "booking:", passengers)
+
+        if passengers <= navail:  
+            d = []
+            for i in range(passengers):
+                d.append(name)
+            print("d",d)
+            entries = ()
+            navail -= len(d)
+            print("navail", navail)
+            #for j in range(len(d)):
+                #for k in range()
+                #c.execute("INSERT INTO seating VALUE ()")
+
+        else:
+            c = []
+            for i in range(passengers):
+                c.append(name)
+            print("lengc",len(c))
+            passengers_refused+=(len(c))
+
+
+
+
+
+
+
+
