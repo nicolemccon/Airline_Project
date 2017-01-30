@@ -1,7 +1,7 @@
 import sqlite3
 import csv
 import pandas as pd
-conn = sqlite3.connect("practice.db") #4SEATS
+conn = sqlite3.connect("practice.db")                                                                      #4SEATS
 c = conn.cursor()
 
 #counting seats
@@ -18,9 +18,9 @@ for item in c:
 
 navail = nseats - nnames
 print("Number of available seats:", navail)
+        
 
-
-rows and aisles
+#rows and aisles
 
 c.execute("SELECT seats FROM rows_cols;")
 for item in c:
@@ -28,6 +28,16 @@ for item in c:
     seats_per_row = (len(seat_letters))
     print("Number of seats per row:", seats_per_row)
     print("Number of rows on the plane:", int(nseats/seats_per_row))
+    
+#list of empty seats
+
+emptyseats = []
+c.execute("SELECT * FROM seating WHERE name LIKE '' ;")                                                 #row|seat = primary key
+for item in c:
+    emptyseats.append(item)                                                                             #list of available seats
+    emptyseats.sort()                                                                                   #sort by row number 
+print(emptyseats)
+ 
 
 df = pd.read_sql_query("SELECT * FROM seating;", conn)  # give the table name and the connection
 print(df.head())
@@ -59,11 +69,3 @@ with open("5passenger.csv") as csvfile:
                 c.append(name)
             print("lengc",len(c))
             passengers_refused+=(len(c))
-
-
-
-
-
-
-
-
