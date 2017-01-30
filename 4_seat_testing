@@ -20,17 +20,14 @@ navail = nseats - nnames
 print("Number of available seats:", navail)
 
 
-#rows and aisles
+rows and aisles
 
-#c.execute("SELECT seats FROM rows_cols;")
-#for item in c:
-#    seat_letters = item[0]
-#    seats_per_row = (len(seat_letters))
-#    print("Number of seats per row:", seats_per_row)
-#    print("Number of rows on the plane:", int(nseats/seats_per_row))
-
-print("Number of seats per row:", 4)
-print("Number of rows on the plane:", 1)
+c.execute("SELECT seats FROM rows_cols;")
+for item in c:
+    seat_letters = item[0]
+    seats_per_row = (len(seat_letters))
+    print("Number of seats per row:", seats_per_row)
+    print("Number of rows on the plane:", int(nseats/seats_per_row))
 
 df = pd.read_sql_query("SELECT * FROM seating;", conn)  # give the table name and the connection
 print(df.head())
