@@ -22,7 +22,17 @@ for item in c:
   #  print("Number of available seats:", seat_a)  
 #navail = nseats - nnames
 #print("Number of available seats:", navail) """ just some refinement """
-        
+  
+#seat letters and number of seats
+"""c.execute("SELECT seat,count(*) from seating group by seat")
+i=0
+for obj in c:
+    no_seats=obj[0]
+    print(obj[0])
+    i=i+1
+print(i)
+no_seats_in_row=i;"""
+  
 
 #rows and aisles
 
