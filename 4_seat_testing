@@ -16,8 +16,12 @@ for item in c:
     nnames = item[0]
     print("Number of unavailable seats:", nnames)
 
-navail = nseats - nnames
-print("Number of available seats:", navail)
+#db.execute("SELECT COUNT(name) FROM seating WHERE name LIKE '' ;")
+#for obj in db:
+ #   seat_a= obj[0]
+  #  print("Number of available seats:", seat_a)  
+#navail = nseats - nnames
+#print("Number of available seats:", navail) """ just some refinement """
         
 
 #rows and aisles
