@@ -1,6 +1,57 @@
 import sqlite3
 import csv
 import pandas as pd
+import numpy as np
+import itertools as it
+from collections import Counter 
+conn = sqlite3.connect("airline_seating.db")                                                                      #4SEATS
+c = conn.cursor()
+
+def countSeats():
+	c.execute("SELECT COUNT(seat) FROM seating")
+	for item in c:
+		nseats = item[0]
+		print("Number of seats on the plane:", nseats)
+# 
+	c.execute("SELECT COUNT(name) FROM seating WHERE name NOT LIKE '' ;")
+	for item in c:
+		nnames = item[0]
+		print("Number of unavailable seats:", nnames)
+# 
+	c.execute("SELECT COUNT(name) FROM seating WHERE name LIKE '' ;")
+	for item in c:
+		navail= item[0]
+		print("Number of available seats:", navail)  
+		navail = nseats - nnames
+	return nseats,nnames,navail
+
+
+def checkEmptySeat():
+	emptySeats={}
+     
+	for i in range(15):
+		seat=[]
+		c.execute("SELECT seat from seating where row = "+str(i+1)+" and name like '' ;")
+		for item in c:
+			seat.append(item[0])
+			# print(str(i+1)+ " "+str(item))
+		emptySeats[i+1]=seat
+	print(emptySeats)
+   
+def main():
+	nseats,nnames,navail=countSeats()
+	checkEmptySeat()
+
+
+if __name__ == '__main__':
+	main()
+
+
+
+#########################################################################################################the above is cleaned code 
+import sqlite3
+import csv
+import pandas as pd
 conn = sqlite3.connect("practice.db")                                                                      #4SEATS
 c = conn.cursor()
 
