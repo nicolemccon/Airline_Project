@@ -37,11 +37,42 @@ def checkEmptySeat():
 			# print(str(i+1)+ " "+str(item))
 		emptySeats[i+1]=seat
 	print(emptySeats)
+def bookSeats(emptySeats, nOfSeats, nameOfPerson):
+	flag = False
+	for row in emptySeats.keys():
+		for i in range(4 - nOfSeats+1):
+			if(emptySeats[row][i:i+nOfSeats].count(0)==0):
+				c.execute("update seating set name = \'"+ nameOfPerson+"\' where row = "+ str(row) +" and seat in "+str(emptySeats[row][i:i+nOfSeats]).replace('[','(').replace(']',')')+" ;")
+				print(nameOfPerson +" booked on Row "+str(row)+ " Seats "+str(emptySeats[row][i:i+nOfSeats]).replace('[','(').replace(']',')'))
+				for seat in range(i+nOfSeats):
+					emptySeats[row][seat]=0
+				flag=True
+				break
+		if(flag):
+			break
+	print(emptySeats)
+	
    
-def main():
-	nseats,nnames,navail=countSeats()
-	checkEmptySeat()
+def csvread():
+    with open("book.csv") as csvfile:
+         bookings = csv.reader(csvfile, delimiter = ',')
+         for row in bookings:
+            name = str(row[0])
+            passengers = (int(row[1]))
+            return name,passengers
+    
+    			
 
+
+def main():
+    nseats,nnames,navail=countSeats()
+    emptySeats=checkEmptySeat()
+    # print(emptySeats)
+    k=csvread()
+    print(k)
+    name_p=k[0]
+    n_seats=k[1]
+    bookSeats(emptySeats,n_seats,name_p)
 
 if __name__ == '__main__':
 	main()
