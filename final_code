@@ -51,16 +51,27 @@ def seat_rows(empty_seats):
     for i in empty_seats.keys():
         seat_keys.append(i)
     return seat_keys
+    
+
+def max_seats(seat_keys, empty_seats):
+    max_seats = 0
+    for row_number in seat_keys:
+        if len(empty_seats[row_number]) > max_seats:
+            max_seats = len(empty_seats[row_number])
+    return max_seats
 
 
 def booking(navail, total_rows, seats_per_row, empty_seats):
-    with open("19passenger.csv") as csvfile:
+    with open("bookings.csv") as csvfile:
         bookings = csv.reader(csvfile, delimiter=',')
         for row in bookings:  # goes back to here after each booking
             name = row[0]
             passengers = (int(row[1]))
             passenger_overflow = 0
-            #print("Number of passengers for", name, "booking:", passengers)
+
+            current_empty = empty_seats_check(total_rows)
+            keys = seat_rows(current_empty)
+            max_room = max_seats(keys, current_empty)
 
             filled = False
 
@@ -68,11 +79,8 @@ def booking(navail, total_rows, seats_per_row, empty_seats):
                 booking = []
                 for i in range(passengers):
                     booking.append(name)
-                while filled == False and len(booking) <= seats_per_row:  # only goes into this if the booking can in theory be accommodated on a full row
-                    current_empty = empty_seats_check(total_rows)
-                    #print ("Empty seats before", name,"seat allocation: ",  current_empty)
-                    keys = seat_rows(current_empty)
 
+                while filled == False and len(booking) <= max_room:  # only goes into this if the booking can be accommodated together in 1 row
                     for row_number in keys:
                         if len(current_empty[row_number]) >= passengers and filled == False:
                             row = row_number
@@ -131,15 +139,24 @@ def booking(navail, total_rows, seats_per_row, empty_seats):
                 passengers_refused += (len(ref))
                 c.execute("UPDATE metrics SET passengers_refused = ?", (passengers_refused,))
 
-        c.execute("SELECT * FROM metrics;")
-        for item in c:
-            print("Passengers Refused: ", item[0])
-            print("Passengers Separated: ", item[1])
+        print ("Bookings Processed")
+
+
+def refused_separated():
+    c.execute("SELECT * FROM metrics;")
+    for item in c:
+        refused = item[0]
+        separated = item[1]
+        print("Passengers Refused: ", item[0])
+        print("Passengers Separated: ", item[1])
+    return refused, separated
+
 
 def main():
     nseats, nnames, navail, seats_per_row, total_rows = count_seats()
     empty_seats = empty_seats_check(total_rows)
     booking(navail, total_rows, seats_per_row, empty_seats)
+    refused_separated()
 
 
 if __name__ == '__main__':
