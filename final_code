@@ -1,3 +1,6 @@
+# Authors : Nicole McConville (seat_rows, max_seats, booking, refused_separated), Madhura Kashikar (count_seats, empy_seats_check)
+# Testing : Mark Doyle
+
 import sqlite3
 import csv
 import sys
