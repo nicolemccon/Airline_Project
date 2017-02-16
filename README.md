@@ -1,16 +1,13 @@
 # Airline_Project
-ARI 
+Analytics Research & Implementation (MIS 40750)
 Airline Programming Assignment
-This work is about air line reservation system.
 
-Team Members:
-Mark 
-Nicole
-Madhura 16200240
 
-Contribution
-Madhura and Nicole :Coding 
-Mark: Testing
+Team Members        Student Number    Contribution
+Mark Doyle            13537123          Testing
+Madhura Kashikar      16200240          Coding (count_seats, empy_seats_check)
+Nicole McConville     12450428          Coding (seat_rows, max_seats, booking, refused_separated)
+
 
 Implementatio:
 
