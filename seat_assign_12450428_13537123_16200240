@@ -24,7 +24,7 @@ def count_seats():
         seats_per_row = (len(seat_letters))
         total_rows = int(n_seats / seats_per_row)
 
-    return n_seats, n_avail, total_rows
+    return n_avail, total_rows
 
 
 def empty_seats_check(total_rows):
@@ -154,10 +154,11 @@ def refused_separated():
 
 
 def main():
-    n_seats, n_avail, total_rows = count_seats()
+    n_avail, total_rows = count_seats()
     booking(n_avail, total_rows)
     refused_separated()
 
 
 if __name__ == '__main__':
     main()
+
