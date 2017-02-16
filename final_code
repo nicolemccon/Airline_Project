@@ -1,36 +1,27 @@
 import sqlite3
 import csv
+import sys
 
-conn = sqlite3.connect("test.db")  # need to remember to make this generic at the end - test has 16 seats
+conn = sqlite3.connect(str(sys.argv[1]))
 c = conn.cursor()
 
 
 def count_seats():
-    c.execute("SELECT COUNT(seat) FROM seating")
+    c.execute("SELECT COUNT(seat) FROM seating;")
     for item in c:
-        nseats = item[0]
-        print("Number of seats on the plane:", nseats)
-    #
-    c.execute("SELECT COUNT(name) FROM seating WHERE name NOT LIKE '' ;")
-    for item in c:
-        nnames = item[0]
-        print("Number of unavailable seats:", nnames)
-    #
+        n_seats = item[0]
+
     c.execute("SELECT COUNT(name) FROM seating WHERE name LIKE '' ;")
     for item in c:
-        navail = item[0]
-        print("Number of available seats:", navail)
-        navail = nseats - nnames
-    #
+        n_avail = item[0]
+
     c.execute("SELECT seats FROM rows_cols;")
     for item in c:
         seat_letters = item[0]
         seats_per_row = (len(seat_letters))
-        print("Number of seats per row:", seats_per_row)
-        total_rows = int(nseats / seats_per_row)
-        print("Number of rows on the plane:", total_rows)
-    #
-    return nseats, nnames, navail, seats_per_row, total_rows
+        total_rows = int(n_seats / seats_per_row)
+
+    return n_seats, n_avail, total_rows
 
 
 def empty_seats_check(total_rows):
@@ -42,7 +33,6 @@ def empty_seats_check(total_rows):
             seat.append(item[0])
         if len(seat) > 0:
             empty_seats[i] = seat
-
     return empty_seats
 
 
@@ -51,38 +41,39 @@ def seat_rows(empty_seats):
     for i in empty_seats.keys():
         seat_keys.append(i)
     return seat_keys
-    
+
 
 def max_seats(seat_keys, empty_seats):
-    max_seats = 0
+    maximum = 0
     for row_number in seat_keys:
-        if len(empty_seats[row_number]) > max_seats:
-            max_seats = len(empty_seats[row_number])
-    return max_seats
+        if len(empty_seats[row_number]) > maximum:
+            maximum = len(empty_seats[row_number])
+    return maximum
 
 
-def booking(navail, total_rows, seats_per_row, empty_seats):
-    with open("bookings.csv") as csvfile:
-        bookings = csv.reader(csvfile, delimiter=',')
-        for row in bookings:  # goes back to here after each booking
+def booking(n_avail, total_rows):
+    with open(str(sys.argv[2])) as csv_file:
+        bookings = csv.reader(csv_file, delimiter=',')
+        for row in bookings:
             name = row[0]
             passengers = (int(row[1]))
+            passengers_separation = passengers
             passenger_overflow = 0
 
             current_empty = empty_seats_check(total_rows)
             keys = seat_rows(current_empty)
-            max_room = max_seats(keys, current_empty)
+            max_avail = max_seats(keys, current_empty)
 
             filled = False
 
-            if passengers <= navail:
-                booking = []
+            if passengers <= n_avail:
+                booking_list = []
                 for i in range(passengers):
-                    booking.append(name)
+                    booking_list.append(name)
 
-                while filled == False and len(booking) <= max_room:  # only goes into this if the booking can be accommodated together in 1 row
+                while not filled and len(booking_list) <= max_avail:  # if the booking can be accomm. together in 1 row
                     for row_number in keys:
-                        if len(current_empty[row_number]) >= passengers and filled == False:
+                        if len(current_empty[row_number]) >= passengers and not filled:
                             row = row_number
                             for i in range(passengers):
                                 seat = str(current_empty[row_number][i])
@@ -90,13 +81,12 @@ def booking(navail, total_rows, seats_per_row, empty_seats):
                                 conn.commit()
                             filled = True
 
-                while filled == False:
+                while not filled:
                     k = 1
                     passengers_new = passengers - k
                     passengers = passengers_new
                     passenger_overflow += k
 
-                    #print("Empty seats before split booking: ", empty_seats_check(total_rows))
                     current_empty = empty_seats_check(total_rows)
                     keys = seat_rows(current_empty)
 
@@ -108,11 +98,20 @@ def booking(navail, total_rows, seats_per_row, empty_seats):
                                 c.execute("UPDATE seating SET name = ? WHERE ROW = ? AND SEAT = ?;",(name, row, seat,))
                                 conn.commit()
                             break
+
+                        c.execute("SELECT passengers_separated FROM metrics")
+                        passengers_separated = []
+                        for item in c:
+                            passengers_separated = item[0]
+                        sep = []
+                        for i in range(passengers_separation):
+                            sep.append(name)
+                        passengers_separated += (len(sep))
+                        c.execute("UPDATE metrics SET passengers_separated = ?", (passengers_separated,))
                         filled = True
 
-
                     for row_number in keys:
-                        if filled == False:
+                        if not filled:
                             if len(current_empty[row_number]) >= passengers:
                                 row = row_number
                                 for i in range(passengers):
@@ -120,15 +119,14 @@ def booking(navail, total_rows, seats_per_row, empty_seats):
                                     c.execute("UPDATE seating SET name = ? WHERE ROW = ? AND SEAT = ?;",
                                               (name, row, seat,))
                                     conn.commit()
-                                passengers = (passenger_overflow)
+                                passengers = passenger_overflow
                                 passenger_overflow = 0
                                 break
 
-                navail -= len(booking)
-                #print("Seats available after", name,"booking:", navail)
+                n_avail -= len(booking_list)
 
             else:
-                # refused seats
+
                 c.execute("SELECT passengers_refused FROM metrics")
                 passengers_refused = []
                 for item in c:
@@ -139,7 +137,7 @@ def booking(navail, total_rows, seats_per_row, empty_seats):
                 passengers_refused += (len(ref))
                 c.execute("UPDATE metrics SET passengers_refused = ?", (passengers_refused,))
 
-        print ("Bookings Processed")
+        print("Bookings Processed")
 
 
 def refused_separated():
@@ -153,15 +151,10 @@ def refused_separated():
 
 
 def main():
-    nseats, nnames, navail, seats_per_row, total_rows = count_seats()
-    empty_seats = empty_seats_check(total_rows)
-    booking(navail, total_rows, seats_per_row, empty_seats)
+    n_seats, n_avail, total_rows = count_seats()
+    booking(n_avail, total_rows)
     refused_separated()
 
 
 if __name__ == '__main__':
     main()
-
-
-#conn.commit()
-#conn.close()
