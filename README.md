@@ -6,7 +6,7 @@ Analytics Research & Implementation (MIS40750) - Airline Programming Assignment
 | Team Members  | Student Number| Contribution  |
 | :-------------: |:-------------:| :-------------:|
 | Mark Doyle    | 13537123 | Testing & Test Document |
-| Madhura Kashikar      | 16200240      |   Coding (count_seats, empty_seats_check) |
+| Madhura Kashikar      | 16200240      |   Coding (count_seats, empty_seats_check, booking (20%)) & Comments |
 | Nicole McConville | 12450428      |    Coding (seat_rows, max_seats, booking, refused_separated) & README |
 
 ## Program Use
