@@ -8,8 +8,8 @@ import sys
 
 
 def database_connection(db):
-    """Set the connection and cursor for the specified database (airplane)"""
-    
+    """Set the connection and cursor for the specified datbase (airplane)"""
+
     conn = sqlite3.connect(str(db))
     c = conn.cursor()
 
@@ -180,4 +180,7 @@ def main(db, csv_arg):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1], sys.argv[2])
+    if len(sys.argv) > 1:
+        main(sys.argv[1], sys.argv[2])
+    else:
+        print("Please specify arguments for the database and csv file.")
