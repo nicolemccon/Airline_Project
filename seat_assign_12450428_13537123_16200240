@@ -40,7 +40,7 @@ def empty_seats_check(total_rows, c):
     """Create dictionary to represent the empty seats on the plane."""
 
     empty_seats = {}
-    for i in range(1, total_rows + 1):  # Plane row numbers start at 1, not 0
+    for i in range(1, total_rows + 1):  
         seat = []
         c.execute("SELECT seat FROM seating WHERE row = " + str(i) + " AND NAME LIKE '' ;")
         for item in c:
@@ -78,7 +78,7 @@ def booking(n_avail, total_rows, csv_arg, c, conn):
         for row in bookings:
             name = row[0]
             passengers = (int(row[1]))
-            passengers_separation = passengers  # Used in updating the separation metric below.
+            passengers_separation = passengers  
             passenger_overflow = 0
 
             current_empty = empty_seats_check(total_rows, c)
@@ -87,14 +87,14 @@ def booking(n_avail, total_rows, csv_arg, c, conn):
 
             filled = False
 
-            if passengers <= n_avail:  # Ensure there is room on the plane.
+            if passengers <= n_avail: 
                 booking_list = []
                 for i in range(passengers):
                     booking_list.append(name)
 
-                while not filled and len(booking_list) <= max_avail:  # If the booking can be accomm. together in 1 row.
+                while not filled and len(booking_list) <= max_avail:  
                     for row_number in keys:
-                        if len(current_empty[row_number]) >= passengers and not filled:  # Find suitably sized row.
+                        if len(current_empty[row_number]) >= passengers and not filled:  
                             row = row_number
                             for i in range(passengers):
                                 seat = str(current_empty[row_number][i])
@@ -104,14 +104,14 @@ def booking(n_avail, total_rows, csv_arg, c, conn):
 
                 while not filled:
                     k = 1
-                    passengers_new = passengers - k  # Reduce number of passengers until they can be accommodated.
+                    passengers_new = passengers - k  
                     passengers = passengers_new
-                    passenger_overflow += k  # Ensure no passengers on the booking are left out.
+                    passenger_overflow += k  
 
                     current_empty = empty_seats_check(total_rows, c)
                     keys = seat_rows(current_empty)
 
-                    if passengers <= 0:  # Ensures the final passenger is booked on (due to passengers - 1 = 0).
+                    if passengers <= 0:  
                         for row_number in keys:
                             row = row_number
                             for i in range(passenger_overflow):
@@ -125,7 +125,7 @@ def booking(n_avail, total_rows, csv_arg, c, conn):
                         for item in c:
                             passengers_separated = item[0]
                         sep = []
-                        for i in range(passengers_separation):  # Using original value from above to update metric.
+                        for i in range(passengers_separation):  
                             sep.append(name)
                         passengers_separated += (len(sep))
                         c.execute("UPDATE metrics SET passengers_separated = ?", (passengers_separated,))
@@ -134,7 +134,7 @@ def booking(n_avail, total_rows, csv_arg, c, conn):
 
                     for row_number in keys:
                         if not filled:
-                            if len(current_empty[row_number]) >= passengers:  # If booking has been sufficiently reduced
+                            if len(current_empty[row_number]) >= passengers:  
                                 row = row_number
                                 for i in range(passengers):
                                     seat = str(current_empty[row_number][i])
@@ -145,7 +145,7 @@ def booking(n_avail, total_rows, csv_arg, c, conn):
                                 passenger_overflow = 0
                                 break
 
-                n_avail -= len(booking_list)  # Reduce number of available seats.
+                n_avail -= len(booking_list)  
 
             else:
 
