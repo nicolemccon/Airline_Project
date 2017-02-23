@@ -91,7 +91,7 @@ def booking(n_avail, total_rows, csv_arg, c, conn):
                 booking_list = []
                 for i in range(passengers):
                     booking_list.append(name)
-
+#bookings for the paasengers that can be seated in a row
                 while not filled and len(booking_list) <= max_avail:  
                     for row_number in keys:
                         if len(current_empty[row_number]) >= passengers and not filled:  
@@ -101,7 +101,7 @@ def booking(n_avail, total_rows, csv_arg, c, conn):
                                 c.execute("UPDATE seating SET name = ? WHERE ROW = ? AND SEAT = ?;", (name, row, seat,))
                                 conn.commit()
                             filled = True
-
+#Separating the passengers that can not be seated together
                 while not filled:
                     k = 1
                     passengers_new = passengers - k  
@@ -117,7 +117,7 @@ def booking(n_avail, total_rows, csv_arg, c, conn):
                             for i in range(passenger_overflow):
                                 seat = str(current_empty[row_number][i])
                                 c.execute("UPDATE seating SET name = ? WHERE ROW = ? AND SEAT = ?;", (name, row, seat,))
-                                conn.commit()
+                                conn.commit()       #commiting the changes to the database
                             break
 
                         c.execute("SELECT passengers_separated FROM metrics")
@@ -148,7 +148,7 @@ def booking(n_avail, total_rows, csv_arg, c, conn):
                 n_avail -= len(booking_list)  
 
             else:
-
+    #storing passengers for whome the bookings is refused
                 c.execute("SELECT passengers_refused FROM metrics")
                 passengers_refused = []
                 for item in c:
