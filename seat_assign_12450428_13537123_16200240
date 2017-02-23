@@ -8,7 +8,7 @@ import sys
 
 
 def database_connection(db):
-    """Set the connection and cursor for the specified datbase (airplane)"""
+    """Set the connection and cursor for the specified database (airplane)"""
 
     conn = sqlite3.connect(str(db))
     c = conn.cursor()
