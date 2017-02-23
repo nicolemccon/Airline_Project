@@ -9,6 +9,10 @@ Analytics Research & Implementation (MIS40750) - Airline Programming Assignment
 | Madhura Kashikar      | 16200240      |   Coding (count_seats, empty_seats_check, booking (20%)) & Comments |
 | Nicole McConville | 12450428      |    Coding (seat_rows, max_seats, booking, refused_separated) & README |
 
+## Plagiarism Statement 
+
+We declare that all of the above have contributed to this work and that it is all our own work as understood by UCD policies.
+
 ## Program Use
 
 This program is used as a booking system for a plane contained on a database file where the booking information is contained in a CSV file.  
