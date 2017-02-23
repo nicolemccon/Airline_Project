@@ -3,17 +3,21 @@ import sqlite3
 from seat_assign_12450428_13537123_16200240 import *
 
 
-class Test_Airline(unittest.TestCase):
+class TestAirline(unittest.TestCase):
+
+    def setUp(self):
+
+        conn = sqlite3.connect("airline_seating.db")
+        self.c = conn.cursor()
 
     def test_count_seats(self):
         """Return values for n_avail and total_rows"""
 
-        conn = sqlite3.connect("airline_seating.db")
-        c = conn.cursor()
-
-        plane_dimensions = count_seats(c)
+        plane_dimensions = count_seats(self.c)
         self.assertEqual(plane_dimensions, (58, 15))
-        
+
+        """working"""
+
     def test_empty_seats_check(self):
         """Return a dictionary with the values being a list of empty seats in each row"""
 
