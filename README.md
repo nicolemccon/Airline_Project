@@ -6,7 +6,7 @@ Analytics Research & Implementation (MIS40750) - Airline Programming Assignment
 | Team Members  | Student Number| Contribution  |
 | :-------------: |:-------------:| :-------------:|
 | Mark Doyle    | 13537123 | Testing & Test Document |
-| Madhura Kashikar      | 16200240      |   Coding (count_seats, empty_seats_check) |
+| Madhura Kashikar      | 16200240      |   Coding (count_seats, empty_seats_check, booking (20%)) & Comments |
 | Nicole McConville | 12450428      |    Coding (seat_rows, max_seats, booking, refused_separated) & README |
 
 ## Program Use
@@ -81,7 +81,7 @@ The layout of the plane is consistent from front to back. In other words, for ex
 For the purpose of the separation metric, our interpretation of the above statement was that if a booking has to be separated in any way, then the total number of passengers on that booking will be included in the metric. For example, if a group of 5 makes a booking on a plane which seats 4 people per row, then the 5 passengers will be included in the separation metric due to the fact that they are sitting away from at least one member of their party. 
 
 ## Testing
-The testing carried out has been covered in the separate document entitled "Airline Testing" (TBC).
+The testing carried out has been covered in the separate document entitled "Airline Testing" (TBC) along with the accompanying testing.py Python file.
 
 
 
